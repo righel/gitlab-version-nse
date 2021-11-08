@@ -37,4 +37,3 @@ This is not 100% accurate as sometimes different minor versions have the same ha
 ## TODO
 * Improve the dictionary generation scripts.
 * Automate the dictionary generation via a github cronned workflow.
-* Show CVEs for the detected version.
