@@ -7,7 +7,7 @@ on:
     - cron: "0 5 * * *"
 
 jobs:
-  tests:
+  update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,11 +15,11 @@ jobs:
           ref: ${{ github.head_ref }}
       - name: Download Gitlab Docker tags jsons
         run: |
+          cd automation
           curl -s https://registry.hub.docker.com/v1/repositories/gitlab/gitlab-ce/tags -o gitlab-ce_tags.json
           curl -s https://registry.hub.docker.com/v1/repositories/gitlab/gitlab-ee/tags -o gitlab-ee_tags.json
       - name: Process missing tags
         run: |
-          cd automation
           python get_gitlab_hashes.py ../gitlab_versions_map.txt
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
