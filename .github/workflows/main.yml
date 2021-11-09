@@ -13,13 +13,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.head_ref }}
-      - name: Download Gitlab Docker tags jsons
+      - name: Process missing tags
+        working-directory: ./automation
         run: |
-          cd automation
           curl -s https://registry.hub.docker.com/v1/repositories/gitlab/gitlab-ce/tags -o gitlab-ce_tags.json
           curl -s https://registry.hub.docker.com/v1/repositories/gitlab/gitlab-ee/tags -o gitlab-ee_tags.json
-      - name: Process missing tags
-        run: |
           python get_gitlab_hashes.py ../gitlab_versions_map.txt
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
