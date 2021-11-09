@@ -1,0 +1,26 @@
+name: "Update GitLab hashes dictionary"
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 5 * * *"
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Download Gitlab Docker tags jsons
+        run: |
+          curl -s https://registry.hub.docker.com/v1/repositories/gitlab/gitlab-ce/tags -o gitlab-ce_tags.json
+          curl -s https://registry.hub.docker.com/v1/repositories/gitlab/gitlab-ee/tags -o gitlab-ee_tags.json
+      - name: Process missing tags
+        run: |
+          cd automation
+          python get_gitlab_hashes.py ../gitlab_versions_map.txt
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: automatic update

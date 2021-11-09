@@ -33,8 +33,4 @@ Nmap done: 1 IP address (1 host up) scanned in 0.50 seconds
 ## How
 Created a dictionary of the webpack static assets manifest hash -> gitlab version. 
 This is not 100% accurate as sometimes different minor versions have the same hash, still gives a good estimate.
-
-## TODO
-* Improve the dictionary generation scripts.
-* Automate the dictionary generation via a github cronned workflow.
-* Show CVEs for the detected version.
+The list of hashes is automatically updated every day via a github action.
