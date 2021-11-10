@@ -23,9 +23,7 @@ portrule = shortport.service({"http", "https"})
 
 action = function(host, port)
     local options = {scheme = port.service, max_body_size = -1}
-
     local response = http.generic_request(host.ip, port, "GET", "/assets/webpack/manifest.json", options)
-
     local manifest_hash = string.match(response["rawbody"], '"hash": "([%w]*)"')
 
     if manifest_hash == nil then
