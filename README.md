@@ -16,16 +16,13 @@ Starting Nmap 7.80 ( https://nmap.org ) at 2021-11-07 18:39 CET
 Nmap scan report for REDACTED
 Host is up (0.013s latency).
 
-PORT    STATE SERVICE
-443/tcp open  https
+PORT     STATE SERVICE VERSION
+8081/tcp open  http    nginx
 | gitlab_version: 
-|   14.0.5
-|     CVE-2021-22237            4.0             https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2021-22237
-|     CVE-2021-22238            3.5             https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2021-22238
-|     CVE-2021-22239            4.0             https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2021-22239
-|     CVE-2021-22241            3.5             https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2021-22241
-|     CVE-2021-22242            3.5             https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2021-22242
-|     CVE-2021-22243            4.0             https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2021-22243
+|   cpe:/a:gitlab:gitlab:13.11.2:*:*:*:enterprise: 
+|     CVE-2021-22181    4.0     https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2021-22181
+|     CVE-2021-22213    4.3     https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2021-22213
+|     CVE-2021-22214    4.3     https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2021-22214
 ...
 Nmap done: 1 IP address (1 host up) scanned in 0.50 seconds
 ```
