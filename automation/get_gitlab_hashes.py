@@ -60,7 +60,7 @@ def load_hashes_dict(hashes_dict_file):
         for line in file:
             hash, versions = line.rstrip().split("=")
             hash = hash.split(".")[1]
-            build, versions = versions.split(":")
+            build, versions = versions.strip("\"").split(":")
             versions = versions.split(",")
             hashes[hash] = (build, set(versions))
 
@@ -70,7 +70,7 @@ def load_hashes_dict(hashes_dict_file):
 def write_hashes_dict(hashes, path):
     with open(path, "w") as output:
         for hash in hashes.items():
-            output.write("manifest.%s=%s:%s\n" % (hash[0], hash[1][0], ','.join(str(s) for s in sorted(hash[1][1]))))
+            output.write('manifest.%s="%s:%s"\n' % (hash[0], hash[1][0], ','.join(str(s) for s in sorted(hash[1][1]))))
 
 
 def load_tags(build):
