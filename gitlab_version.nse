@@ -21,6 +21,12 @@ license = "Apache License 2.0"
 
 portrule = shortport.service({"http", "https"})
 
+local cve_meta = {
+    __tostring = function(me)
+        return ("%s\t%s\t%s"):format(me.id, me.cvss, me.href)
+    end
+}
+
 action = function(host, port)
     local options = {scheme = port.service, max_body_size = -1}
     local response = http.generic_request(host.ip, port, "GET", "/assets/webpack/manifest.json", options)
@@ -34,20 +40,29 @@ action = function(host, port)
     local build = string.match(banner, "([%w-]*):")
     local versions = string.match(banner, ".*:([%d.,]*)")
 
+    local edition = "*"
+    if (build == "gitlab-ce") then
+        edition = "community"
+    end
+    if (build == "gitlab-ee") then
+        edition = "enterprise"
+    end
+
     local output = {}
 
     if manifest_hash ~= nil then
         for version in string.gmatch(versions, "[%d.]+") do
-            table.insert(output, version)
-
+            local cpe = ("cpe:/a:gitlab:gitlab:%s:*:*:*:%s"):format(version, edition)
+            local r = {}
             if stdnse.get_script_args("showcves") then
-                local cves = get_vulners_results(build, version)
-                table.insert(output, cves)
+                r = get_vulners_results(build, version)
             end
+
+            output[cpe] = r
         end
     end
 
-    return stdnse.format_output(true, output)
+    return output
 end
 
 function get_vulners_results(build, version)
@@ -72,10 +87,15 @@ function get_vulners_results(build, version)
     local output = {}
     for _, vuln in ipairs(vulns.data.search) do
         if vuln._source.type == "cve" then
-            table.insert(
-                output,
-                ("%s\t\t%s\t\t%s"):format(vuln._source.title, vuln._source.cvss.score, vuln._source.href)
-            )
+            local v = {
+                id = vuln._source.id,
+                type = vuln._source.type,
+                href = vuln._source.href,
+                cvss = vuln._source.cvss.score
+            }
+
+            setmetatable(v, cve_meta)
+            output[#output + 1] = v
         end
     end
 
