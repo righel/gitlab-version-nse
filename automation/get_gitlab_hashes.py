@@ -2,7 +2,6 @@
 
 import json
 import subprocess
-from collections import OrderedDict
 import sys
 
 global builds
@@ -17,7 +16,9 @@ def main(argv):
 
     hashes_dict_file = argv[0]
     hashes = process_missing_tags(hashes_dict_file)
+
     write_hashes_dict(hashes, hashes_dict_file)
+
 
 def get_manifest_hash(branch, version):
     try:
@@ -32,10 +33,7 @@ def get_manifest_hash(branch, version):
     subprocess.check_output("docker create --name='tmp_gitlab' %s" % image, shell=True)
     subprocess.check_output("docker export tmp_gitlab -o tmp_gitlab.tar", shell=True)
     subprocess.check_output("mkdir -p assets/", shell=True)
-    subprocess.check_output(
-        "tar -xf tmp_gitlab.tar opt/gitlab/embedded/service/gitlab-rails/public/assets/ --strip-components=6",
-        shell=True
-    )
+    subprocess.check_output("tar -xf tmp_gitlab.tar opt/gitlab/embedded/service/gitlab-rails/public/assets/ --strip-components=6", shell=True)
 
     # get version hash
     with open("./assets/webpack/manifest.json", "r") as file:
@@ -55,22 +53,16 @@ def get_manifest_hash(branch, version):
 
 
 def load_hashes_dict(hashes_dict_file):
-    hashes = OrderedDict()
     with open(hashes_dict_file, "r") as file:
-        for line in file:
-            hash, versions = line.rstrip().split("=")
-            hash = hash.split(".")[1]
-            build, versions = versions.strip("\"").split(":")
-            versions = versions.split(",")
-            hashes[hash] = (build, set(versions))
+        raw_hashes = file.read()
+    hashes = json.loads(raw_hashes)
 
-        return hashes
+    return hashes
 
 
 def write_hashes_dict(hashes, path):
     with open(path, "w") as output:
-        for hash in hashes.items():
-            output.write('manifest.%s="%s:%s"\n' % (hash[0], hash[1][0], ','.join(str(s) for s in sorted(hash[1][1]))))
+        json.dump(hashes, output, indent=4, sort_keys=True)
 
 
 def load_tags(build):
@@ -113,17 +105,18 @@ def process_missing_tags(hashes_dict_file):
             ):
                 clean_version = version[:version.index('-')]
                 hash = get_manifest_hash(build, version)
-            
+
                 if hashes.get(hash):
-                    hashes[hash][1].add(clean_version)
+                    hashes[hash]["versions"].append(clean_version)
                 else:
-                    hashes[hash] = (build, set([clean_version]))
+                    hashes[hash] = {"build": build, "versions": set([clean_version])}
 
                 processed[build].append(version)
 
     write_processed_tags(processed)
 
     return hashes
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])

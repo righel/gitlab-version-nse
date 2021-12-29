@@ -11,7 +11,7 @@ description =
     Works for versions >= 9.x, can return multiple versions for a give instance.
 ]]
 ---
--- @usage nmap <target> -p PORT --script gitlab_version.nse --script-args-file="/full/path/to/gitlab_versions_map.txt"
+-- @usage nmap <target> -p PORT --script gitlab_version.nse [--script-args="showcves"]
 ---
 
 categories = {"safe", "version"}
@@ -27,6 +27,16 @@ local cve_meta = {
     end
 }
 
+local function get_hashes_map()
+    local response = http.get_url("https://raw.githubusercontent.com/righel/gitlab-version-nse/main/gitlab_hashes.json", {max_body_size = -1})
+    if response.status == 200 then
+        _, hashes = json.parse(response.body)
+        return hashes
+    end
+
+    return nil
+end
+
 action = function(host, port)
     local options = {scheme = port.service, max_body_size = -1}
     local response = http.generic_request(host.targetname or host.ip, port, "GET", "/assets/webpack/manifest.json", options)
@@ -35,10 +45,16 @@ action = function(host, port)
     if manifest_hash == nil then
         return "ERROR: GitLab instance not found or running version < 9.x"
     end
+    
+    local manifest_hashes_map = get_hashes_map()
+    local banner = manifest_hashes_map[manifest_hash]
 
-    local banner = stdnse.get_script_args("manifest." .. manifest_hash)
-    local build = string.match(banner, "([%w-]*):")
-    local versions = string.match(banner, ".*:([%d.,]*)")
+    if banner == nil then
+        return "ERROR: GitLab manifest hash not found in map: " .. manifest_hash
+    end
+
+    local build = banner["build"]
+    local versions = banner["versions"]
 
     local edition = "*"
     if (build == "gitlab-ce") then
@@ -51,11 +67,14 @@ action = function(host, port)
     local output = {}
 
     if manifest_hash ~= nil then
-        for version in string.gmatch(versions, "[%d.]+") do
+        for _, version in ipairs(versions) do
             local cpe = ("cpe:/a:gitlab:gitlab:%s:*:*:*:%s"):format(version, edition)
-            local r = {}
+            r = {
+                version = version,
+                edition = edition
+            }
             if stdnse.get_script_args("showcves") then
-                r = get_vulners_results(build, version)
+                r["cves"] = get_vulners_results(build, version)
             end
 
             output[cpe] = r

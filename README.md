@@ -3,15 +3,15 @@ Nmap script to guess* a GitLab version.
 
 # Usage
 ```
-https://github.com/righel/gitlab-version-nse
+git clone https://github.com/righel/gitlab-version-nse
 cd gitlab-version-nse 
-nmap <target> --script ./gitlab_version.nse [--script-args="showcves"] --script-args-file="/home/user/gitlab-version-nse/gitlab_versions_map.txt"
+nmap <target> --script ./gitlab_version.nse [--script-args="showcves"]
 ```
 * use `--script-args="showcves"` to get version CVEs via Vulners API.
 
 sample output:
 ```
-$ nmap REDACTED -p 443 --script ./gitlab_version.nse -script-args="showcves" --script-args-file="/home/user/gitlab-version-nse/gitlab_versions_map.txt"
+$ nmap REDACTED -p 443 --script ./gitlab_version.nse --script-args="showcves"
 Starting Nmap 7.80 ( https://nmap.org ) at 2021-11-07 18:39 CET
 Nmap scan report for REDACTED
 Host is up (0.013s latency).
