@@ -109,7 +109,7 @@ def process_missing_tags(hashes_dict_file):
                 if hashes.get(hash):
                     hashes[hash]["versions"].append(clean_version)
                 else:
-                    hashes[hash] = {"build": build, "versions": set([clean_version])}
+                    hashes[hash] = {"build": build, "versions": [clean_version]}
 
                 processed[build].append(version)
 
