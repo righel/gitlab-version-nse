@@ -96,7 +96,7 @@ def process_missing_tags(hashes_dict_file):
     # process missing tags
     for build in builds:
         tags = load_tags(build)
-        for tag in tags:
+        for tag in tags["results"]:
             version = str(tag["name"])
             if(
                 not any(ignore in version for ignore in ignore_list)
