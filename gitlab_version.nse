@@ -39,7 +39,13 @@ end
 
 action = function(host, port)
     local options = {scheme = port.service, max_body_size = -1}
-    local response = http.generic_request(host.targetname or host.ip, port, "GET", "/assets/webpack/manifest.json", options)
+
+    manifest_url = "/assets/webpack/manifest.json"
+    if stdnse.get_script_args("subdir") then
+        manifest_url =  stdnse.get_script_args("subdir") .. manifest_url
+    end
+
+    local response = http.generic_request(host.targetname or host.ip, port, "GET", manifest_url, options)
     local manifest_hash = string.match(response["rawbody"], '"hash": "([%w]*)"')
 
     if manifest_hash == nil then

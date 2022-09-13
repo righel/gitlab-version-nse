@@ -5,9 +5,10 @@ Nmap script to guess* a GitLab version.
 ```
 git clone https://github.com/righel/gitlab-version-nse
 cd gitlab-version-nse 
-nmap <target> --script ./gitlab_version.nse [--script-args="showcves"]
+nmap <target> --script ./gitlab_version.nse [--script-args="showcves", --script-args="subdir=/custom-subdir"]
 ```
 * use `--script-args="showcves"` to get version CVEs via Vulners API.
+* use `--script-args="subdir=/custom-subdir"` if GitLab is installed in a sub-directory.
 
 sample output:
 ```
