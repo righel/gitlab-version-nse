@@ -3136,7 +3136,8 @@
     "ade829b1db1750dc2043": {
         "build": "gitlab-ee",
         "versions": [
-            "15.4.1"
+            "15.4.1",
+            "15.4.2"
         ]
     },
     "adfe78d0aefbab620433": {
@@ -3554,7 +3555,8 @@
     "c5d6b74f895e4fbfb476": {
         "build": "gitlab-ce",
         "versions": [
-            "15.4.1"
+            "15.4.1",
+            "15.4.2"
         ]
     },
     "c5d8ab5a701f0778a74d": {
