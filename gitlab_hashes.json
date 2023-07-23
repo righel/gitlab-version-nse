@@ -1021,6 +1021,12 @@
             "10.3.6"
         ]
     },
+    "301fd41cd825d01419c0": {
+        "build": "gitlab-ce",
+        "versions": [
+            "16.2.0"
+        ]
+    },
     "30b3667b4d41d8ce44a3": {
         "build": "gitlab-ce",
         "versions": [
@@ -4375,6 +4381,12 @@
         "build": "gitlab-ce",
         "versions": [
             "14.7.1"
+        ]
+    },
+    "d80ea0921fc4647c37d5": {
+        "build": "gitlab-ee",
+        "versions": [
+            "16.2.0"
         ]
     },
     "d82cb00d39d43a109c20": {
