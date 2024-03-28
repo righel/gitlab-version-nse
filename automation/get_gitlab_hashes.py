@@ -20,7 +20,7 @@ def main(argv):
     write_hashes_dict(hashes, hashes_dict_file)
 
 
-def get_manifest_hash(branch, version):
+def get_manifest_hashes(branch, version):
     try:
         subprocess.check_output("docker rm tmp_gitlab", shell=True)
     except:
@@ -32,24 +32,33 @@ def get_manifest_hash(branch, version):
     # pull tag
     subprocess.check_output("docker create --name='tmp_gitlab' %s" % image, shell=True)
     subprocess.check_output("docker export tmp_gitlab -o tmp_gitlab.tar", shell=True)
-    subprocess.check_output("mkdir -p assets/", shell=True)
-    subprocess.check_output("tar -xf tmp_gitlab.tar opt/gitlab/embedded/service/gitlab-rails/public/assets/ --strip-components=6", shell=True)
+    subprocess.check_output("tar -xf tmp_gitlab.tar opt/gitlab/embedded/service/gitlab-rails/public/assets/webpack/manifest.json --strip-components=8", shell=True)
+    subprocess.check_output("tar -xf tmp_gitlab.tar opt/gitlab/version-manifest.json --strip-components=2", shell=True)
 
-    # get version hash
-    with open("./assets/webpack/manifest.json", "r") as file:
+    # get version webpack assets hash
+    with open("manifest.json", "r") as file:
         raw_manifest = file.read()
     manifest = json.loads(raw_manifest)
+
+    # get version commit hash
+    with open("version-manifest.json", "r") as file:
+        raw_version_manifest = file.read()
+    version_manifest = json.loads(raw_version_manifest)
 
     # cleanup
     try:
         subprocess.check_output("docker rmi %s -f" % image, shell=True)
         subprocess.check_output("docker rm tmp_gitlab", shell=True)
         subprocess.check_output("rm tmp_gitlab.tar", shell=True)
-        subprocess.check_output("rm -rf assets/", shell=True)
+        subprocess.check_output("rm manifest.json", shell=True)
+        subprocess.check_output("rm version-manifest.json", shell=True)
     except:
         pass
 
-    return str(manifest["hash"])
+    return {
+        "webpack_hash": str(manifest["hash"]),
+        "commit_hash": str(version_manifest["software"]["gitlab-rails"]["locked_version"])
+    }
 
 
 def load_hashes_dict(hashes_dict_file):
@@ -104,12 +113,19 @@ def process_missing_tags(hashes_dict_file):
                 not any(processed in version for processed in processed[build])
             ):
                 clean_version = version[:version.index('-')]
-                hash = get_manifest_hash(build, version)
+                hash = get_manifest_hashes(build, version)
 
-                if hashes.get(hash):
-                    hashes[hash]["versions"].append(clean_version)
+                if hashes.get(hash['webpack_hash']):
+                    hashes[hash['webpack_hash']]["versions"].append(clean_version)
+                    hashes[hash['webpack_hash']]["versions"] = list(set(hashes[hash['webpack_hash']]["versions"]))
                 else:
-                    hashes[hash] = {"build": build, "versions": [clean_version]}
+                    hashes[hash['webpack_hash']] = {"build": build, "versions": [clean_version]}
+
+                if hashes.get(hash['commit_hash']):
+                    hashes[hash['commit_hash']]["versions"].append(clean_version)
+                    hashes[hash['commit_hash']]["versions"] = list(set(hashes[hash['commit_hash']]["versions"]))
+                else:
+                    hashes[hash['commit_hash']] = {"build": build, "versions": [clean_version]}
 
                 processed[build].append(version)
 

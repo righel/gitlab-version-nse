@@ -47,16 +47,23 @@ action = function(host, port)
 
     local response = http.generic_request(host.targetname or host.ip, port, "GET", manifest_url, options)
     local manifest_hash = string.match(response["rawbody"], '"hash": "([%w]*)"')
+    
+    
+    login_url = "/users/sign_in"
+    if stdnse.get_script_args("subdir") then
+        login_url =  stdnse.get_script_args("subdir") .. login_url
+    end
+    local response = http.generic_request(host.targetname or host.ip, port, "GET", login_url, options)
+    local commit_hash = string.match(response["rawbody"], 'gon.revision="([%w]*)"')
 
-    if manifest_hash == nil then
+    if manifest_hash == nil and commit_hash == nil  then
         return "ERROR: GitLab instance not found or running version < 9.x"
     end
-    
-    local manifest_hashes_map = get_hashes_map()
-    local banner = manifest_hashes_map[manifest_hash]
+
+    local banner = get_banner(manifest_hash, commit_hash)
 
     if banner == nil then
-        return "ERROR: GitLab manifest hash not found in map: " .. manifest_hash
+        return "ERROR: GitLab hash not found in map: webpack_hash:" .. manifest_hash .. ", commit_hash:" .. commit_hash
     end
 
     local build = banner["build"]
@@ -88,6 +95,29 @@ action = function(host, port)
     end
 
     return output
+end
+
+function get_banner(manifest_hash, commit_hash)
+    local manifest_hashes_map = get_hashes_map()
+    if manifest_hashes_map == nil then
+        return nil
+    end
+
+    -- search for commit hash
+    for key, value in pairs(manifest_hashes_map) do
+        if type(key) == "string" and key:sub(1, #commit_hash) == commit_hash then
+            return value
+        end
+    end
+
+    -- search for webpack manifest hash
+    local banner = manifest_hashes_map[manifest_hash]
+
+    if banner == nil then
+        return nil
+    end
+
+    return banner
 end
 
 function get_vulners_results(build, version)
