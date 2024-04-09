@@ -17,8 +17,6 @@ jobs:
       - name: Process missing tags
         working-directory: ./automation
         run: |
-          curl -s https://registry.hub.docker.com/v2/repositories/gitlab/gitlab-ce/tags?page_size=100 -o gitlab-ce_tags.json
-          curl -s https://registry.hub.docker.com/v2/repositories/gitlab/gitlab-ee/tags?page_size=100 -o gitlab-ee_tags.json
           python get_gitlab_hashes.py ../gitlab_hashes.json
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
