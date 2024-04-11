@@ -55,7 +55,7 @@ def get_manifest_hashes(branch, version):
         with open("version-manifest.json", "r") as file:
             raw_version_manifest = file.read()
         version_manifest = json.loads(raw_version_manifest)
-        commit_hash = str(version_manifest["gitlab"]["commit"])
+        commit_hash = str(version_manifest["software"]["gitlab-rails"]["locked_version"])
         subprocess.check_output("rm version-manifest.json", shell=True)
     except:
         print("Failed to get commit hash for %s" % image)
