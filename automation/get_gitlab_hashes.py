@@ -67,6 +67,7 @@ def get_manifest_hashes(branch, version):
         subprocess.check_output("docker rmi %s -f" % image, shell=True)
         subprocess.check_output("docker rm tmp_gitlab", shell=True)
         subprocess.check_output("rm tmp_gitlab.tar", shell=True)
+        subprocess.check_output("docker system prune --all --force", shell=True)
     except:
         pass
 
