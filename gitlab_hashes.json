@@ -69,6 +69,12 @@
             "12.7.4"
         ]
     },
+    "01e9777da9bce3d3e4cd9223c5b5fc5f1dec38e4": {
+        "build": "gitlab-ee",
+        "versions": [
+            "17.4.3"
+        ]
+    },
     "0218bf32825db6f0dd65": {
         "build": "gitlab-ce",
         "versions": [
@@ -1185,6 +1191,12 @@
             "10.4.0"
         ]
     },
+    "128f99144e8a7bcb80a4ca88ef65092e02e456a9": {
+        "build": "gitlab-ce",
+        "versions": [
+            "17.3.6"
+        ]
+    },
     "12920a0cf6d30b69ad25": {
         "build": "gitlab-ee",
         "versions": [
@@ -2182,6 +2194,12 @@
             "13.11.5"
         ]
     },
+    "2159004b55be06dfcba7": {
+        "build": "gitlab-ce",
+        "versions": [
+            "17.3.6"
+        ]
+    },
     "216304f8eb0d175a1e54": {
         "build": "gitlab-ee",
         "versions": [
@@ -2240,6 +2258,12 @@
         "build": "gitlab-ee",
         "versions": [
             "17.4.0"
+        ]
+    },
+    "222d5cacf7fcddf14fcf": {
+        "build": "gitlab-ee",
+        "versions": [
+            "17.4.3"
         ]
     },
     "224c9f103ccf8bf46799": {
@@ -8715,6 +8739,12 @@
             "12.3.7"
         ]
     },
+    "850b515759c496550a7a": {
+        "build": "gitlab-ce",
+        "versions": [
+            "17.4.3"
+        ]
+    },
     "8528b41e42563ba9da5b1a4ab447a9a17fe0bdb1": {
         "build": "gitlab-ee",
         "versions": [
@@ -9468,6 +9498,12 @@
         "build": "gitlab-ce",
         "versions": [
             "13.3.0"
+        ]
+    },
+    "91448ae3833fd3b5b3c7": {
+        "build": "gitlab-ee",
+        "versions": [
+            "17.5.1"
         ]
     },
     "914bed6c7a7182a2affcd8f399e257b950e6bace": {
@@ -11867,6 +11903,12 @@
             "13.3.6"
         ]
     },
+    "b8d203cbe708287fb3ac": {
+        "build": "gitlab-ce",
+        "versions": [
+            "17.5.1"
+        ]
+    },
     "b8ec11a6a15952a9a1851fba2bd7890e572e5a6f": {
         "build": "gitlab-ce",
         "versions": [
@@ -13345,6 +13387,12 @@
             "15.2.5"
         ]
     },
+    "cf36eeb39e6b055c08297149dc98ad1cc90248be": {
+        "build": "gitlab-ee",
+        "versions": [
+            "17.3.6"
+        ]
+    },
     "cf39803b81f23cf2eba6eb5a7e653862ed92a63c": {
         "build": "gitlab-ee",
         "versions": [
@@ -13504,6 +13552,12 @@
         "build": "gitlab-ee",
         "versions": [
             "11.0.5"
+        ]
+    },
+    "d1489ae6de3a4e80008d": {
+        "build": "gitlab-ee",
+        "versions": [
+            "17.3.6"
         ]
     },
     "d15a8dcf6f57d8366280fabfa8e17ca5b8d6b453": {
@@ -14530,6 +14584,12 @@
             "14.6.3"
         ]
     },
+    "e08c70fa12d5942e3a33ed60afb2a241c5f915c8": {
+        "build": "gitlab-ce",
+        "versions": [
+            "17.4.3"
+        ]
+    },
     "e10a21e66ce1ed8054bbbea9752ce6fc356e489d": {
         "build": "gitlab-ee",
         "versions": [
@@ -14791,6 +14851,12 @@
         "build": "gitlab-ee",
         "versions": [
             "8.6.5"
+        ]
+    },
+    "e4e13234b2da1da5a93791b06b425f36809bf4a6": {
+        "build": "gitlab-ee",
+        "versions": [
+            "17.5.1"
         ]
     },
     "e4ead4df2e713643c893": {
@@ -15067,6 +15133,12 @@
         "build": "gitlab-ee",
         "versions": [
             "14.0.12"
+        ]
+    },
+    "e8dca57316730f48a89e1914c224c5d9bac42bc3": {
+        "build": "gitlab-ce",
+        "versions": [
+            "17.5.1"
         ]
     },
     "e8df2b4fde206d7d9703": {
