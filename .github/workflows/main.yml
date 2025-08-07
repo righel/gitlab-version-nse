@@ -10,14 +10,18 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 120
+
+    permissions:
+      contents: write
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
       - name: Process missing tags
         working-directory: ./automation
         run: |
           python get_gitlab_hashes.py ../gitlab_hashes.json
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v6
         with:
           commit_message: automatic update
