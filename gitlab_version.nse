@@ -40,7 +40,7 @@ end
 action = function(host, port)
     local options = {scheme = port.service, max_body_size = -1}
 
-    manifest_url = "/assets/webpack/manifest.json"
+    local manifest_url = "/assets/webpack/manifest.json"
     if stdnse.get_script_args("subdir") then
         manifest_url =  stdnse.get_script_args("subdir") .. manifest_url
     end
@@ -49,7 +49,7 @@ action = function(host, port)
     local manifest_hash = string.match(response["rawbody"], '"hash": "([%w]*)"')
     
     
-    login_url = "/users/sign_in"
+    local login_url = "/users/sign_in"
     if stdnse.get_script_args("subdir") then
         login_url =  stdnse.get_script_args("subdir") .. login_url
     end
@@ -63,7 +63,8 @@ action = function(host, port)
     local banner = get_banner(manifest_hash, commit_hash)
 
     if banner == nil then
-        return "ERROR: GitLab hash not found in map: webpack_hash:" .. manifest_hash .. ", commit_hash:" .. commit_hash
+        return ("ERROR: GitLab hash not found in map: webpack_hash:%s, commit_hash:%s")
+            :format(manifest_hash or "nil", commit_hash or "nil")
     end
 
     local build = banner["build"]
@@ -79,19 +80,17 @@ action = function(host, port)
 
     local output = {}
 
-    if manifest_hash ~= nil then
-        for _, version in ipairs(versions) do
-            local cpe = ("cpe:/a:gitlab:gitlab:%s:*:*:*:%s"):format(version, edition)
-            r = {
-                version = version,
-                edition = edition
-            }
-            if stdnse.get_script_args("showcves") then
-                r["cves"] = get_vulners_results(build, version)
-            end
-
-            output[cpe] = r
+    for _, version in ipairs(versions) do
+        local cpe = ("cpe:/a:gitlab:gitlab:%s:*:*:*:%s"):format(version, edition)
+        local result = {
+            version = version,
+            edition = edition
+        }
+        if stdnse.get_script_args("showcves") then
+            result["cves"] = get_vulners_results(build, version)
         end
+
+        output[cpe] = result
     end
 
     return output
@@ -105,13 +104,13 @@ function get_banner(manifest_hash, commit_hash)
 
     -- search for commit hash
     for key, value in pairs(manifest_hashes_map) do
-        if type(key) == "string" and key:sub(1, #commit_hash) == commit_hash then
+        if commit_hash ~= nil and type(key) == "string" and key:sub(1, #commit_hash) == commit_hash then
             return value
         end
     end
 
     -- search for webpack manifest hash
-    local banner = manifest_hashes_map[manifest_hash]
+    local banner = manifest_hash ~= nil and manifest_hashes_map[manifest_hash] or nil
 
     if banner == nil then
         return nil
