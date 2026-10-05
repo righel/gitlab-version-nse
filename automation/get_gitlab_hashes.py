@@ -65,7 +65,6 @@ def get_manifest_hashes(branch, version):
     # cleanup
     try:
         subprocess.check_output("rm tmp_gitlab.tar", shell=True)
-        subprocess.check_output("docker system prune --all --force", shell=True)
         subprocess.check_output("docker rmi %s -f" % image, shell=True)
         subprocess.check_output("docker rm tmp_gitlab", shell=True)
     except:
@@ -142,12 +141,14 @@ def process_missing_tags(hashes_dict_file, fetch_all_tags=False):
             if(
                 not any(ignore in version for ignore in ignore_list)
                 and
-                not any(processed in version for processed in processed[build])
+                version not in processed[build]
             ):
                 clean_version = version[:version.index('-')]
                 hash = get_manifest_hashes(build, version)
 
+                has_hash = False
                 if hash['webpack_hash'] is not None:
+                    has_hash = True
                     if hashes.get(hash['webpack_hash']):
                         hashes[hash['webpack_hash']]["versions"].append(clean_version)
                         hashes[hash['webpack_hash']]["versions"] = list(set(hashes[hash['webpack_hash']]["versions"]))
@@ -155,13 +156,15 @@ def process_missing_tags(hashes_dict_file, fetch_all_tags=False):
                         hashes[hash['webpack_hash']] = {"build": build, "versions": [clean_version]}
 
                 if hash['commit_hash'] is not None:
+                    has_hash = True
                     if hashes.get(hash['commit_hash']):
                         hashes[hash['commit_hash']]["versions"].append(clean_version)
                         hashes[hash['commit_hash']]["versions"] = list(set(hashes[hash['commit_hash']]["versions"]))
                     else:
                         hashes[hash['commit_hash']] = {"build": build, "versions": [clean_version]}
 
-                processed[build].append(version)
+                if has_hash:
+                    processed[build].append(version)
 
             # do partial writes to avoid losing progress
             write_processed_tags(processed)
